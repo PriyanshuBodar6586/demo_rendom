@@ -1,7 +1,5 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
-
+import 'package:swipeable_card_stack/swipeable_card_stack.dart';
 
 void main() {
   runApp(MyApp());
@@ -11,100 +9,131 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: ThemeData.dark().copyWith(scaffoldBackgroundColor: Color.fromARGB(255, 18, 32, 47)),
-      debugShowCheckedModeBanner: false,
-      home: HomePage(),
+      title: 'Flutter Demo',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: MyHomePage(title: 'Flutter Demo Home Page'),
     );
   }
 }
 
-class HomePage extends StatefulWidget {
+class MyHomePage extends StatefulWidget {
+  MyHomePage({Key? key, required this.title}) : super(key: key);
+  final String title;
+
   @override
-  _HomePageState createState() => _HomePageState();
+  _MyHomePageState createState() => _MyHomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
-  final _random = new Random();
-  var data = [
-    'T 0',
-    'T 1',
-    'T 2',
-    'T 3',
-    'T 4',
-    'T 5',
-    'T 6',
-    'T 7',
-    'T 8',
-    'T 9',
-    'T 10',
-    'T 11',
-    'T 12',
-    'T 13',
-    'T 14',
-    'T 15',
-    'T 16',
-    'T 17',
-    'T 18',
-    'T 19',
+class _MyHomePageState extends State<MyHomePage> {
+  int counter = 4;
+  List <Color>l1 =[
+
+      Colors.deepPurpleAccent,
+      Colors.white24,
+      Colors.red,
+      Colors.redAccent,
+      Colors.teal,
+      Colors.tealAccent,
+      Colors.yellow,
+      Colors.indigo,
+      Colors.indigoAccent,
+      Colors.purpleAccent,
+      Colors.purple,
+      Colors.pink,
+      Colors.pinkAccent,
+      Colors.amber,
+      Colors.deepPurple,
+      Colors.deepOrange,
+      Colors.green,
+      Colors.lightGreen,
+      Colors.lightGreenAccent,
+      Colors.lime,
+      Colors.limeAccent,
+      Colors.cyanAccent,
+      Colors.cyan,
+      Colors.blue,
+      Colors.black,
+      Colors.blueGrey,
+      Colors.brown,
+      Colors.lightBlue,
+      Colors.lightGreenAccent,
+      Colors.tealAccent,
+      Colors.yellowAccent,
+      Colors.deepOrangeAccent,
   ];
 
-  var listToShow = [];
+
   @override
   Widget build(BuildContext context) {
+    SwipeableCardSectionController _cardController = SwipeableCardSectionController();
+    //  c1 (
 
+    // );
     return Scaffold(
-      bottomNavigationBar: BottomAppBar(
-        shape: CircularNotchedRectangle(),
-        child: Container(
-          height: 75,
-          child: Row(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              IconButton(
-                iconSize: 30.0,
-                padding: EdgeInsets.only(left: 28.0),
-                icon: Icon(Icons.refresh),
-                onPressed: () {
-                  setState(() {
-                    updateDataInList();
-                  });
-                },
-              ),
-              IconButton(
-                iconSize: 30.0,
-                padding: EdgeInsets.only(right: 28.0),
-                icon: Icon(Icons.all_inclusive),
-                onPressed: () {
-                  setState(() {
-                    showAllData();
-                  });
-                },
-              ),
-
-            ],
-          ),
-        ),
+      appBar: AppBar(
+        title: Text(widget.title),
       ),
-      body: ListView.builder(
-        itemCount: listToShow.length,
-        itemBuilder: (context, i) {
-          return Ink(
-            color: Colors.blueGrey,
-            child: ListTile(
-              title: Text(listToShow[i].toString()),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          SwipeableCardsSection(
+            cardController: _cardController,
+            context: context,
+            items: [
+             Container(
+               height: 500,
+               width: 350,
+               color: Colors.greenAccent,
+             ),
+             Container(
+               height: 500,
+               width: 350,
+               color: Colors.green,
+             ),
+             Container(
+               height: 500,
+               width: 350,
+               color: Colors.orange,
+             ),
+            ],
+            onCardSwiped: (dir, index, widget) {
+              if (counter <= l1.length) {
+                _cardController.addItem(Container(height: 500,width: 350,color:l1[index]));
+                counter++;
+              }
+            },
+
+            enableSwipeUp: false,
+            enableSwipeDown: false,
+          ),
+          Container(
+            margin: EdgeInsets.symmetric(vertical: 20.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                FloatingActionButton(
+                  child: Icon(Icons.chevron_left),
+                  onPressed: () => _cardController.triggerSwipeLeft(),
+                ),
+                FloatingActionButton(
+                  child: Icon(Icons.chevron_right),
+                  onPressed: () => _cardController.triggerSwipeRight(),
+                ),
+                FloatingActionButton(
+                  child: Icon(Icons.arrow_upward),
+                  onPressed: () => _cardController.triggerSwipeUp(),
+                ),
+                FloatingActionButton(
+                  child: Icon(Icons.arrow_downward),
+                  onPressed: () => _cardController.triggerSwipeDown(),
+                ),
+              ],
             ),
-          );
-        },
+          )
+        ],
       ),
     );
-  }
-
-  void updateDataInList() {
-    listToShow = new List.generate(10, (_) => data[_random.nextInt(data.length)]);
-  }
-
-  void showAllData(){
-    listToShow = data;
   }
 }
